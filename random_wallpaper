@@ -1,0 +1,61 @@
+#!/bin/bash
+RESOLUTION=1920x1080
+PURITY=100 #000-111 #first number SFW, second sketchy, third NSFW. NSFW doesn't work because you need to authorize.
+BOARD=2 #2, 1, 3 or combined (21 for general + anime). 2=general, 1=anime, 3=high res
+BGOPTION="--bg-max --no-xinerama" # how feh should apply the image as a background, --bg-max or --bg-fill are good options, see man feh for more
+WALLPAPERFILTER="http://wallbase.cc/random?section=wallpapers&q=&res_opt=eqeq&thpp=20&purity=$PURITY&board=$BOARD&aspect=0.00&res="
+
+fetch_from_web_to_stdout () {
+  wget -qO- $1
+}
+
+get_first_url_from_line_with () {
+  awk -v "PATTERN=$1" -F'"' '$0 ~ PATTERN{print $2;exit}'
+}
+
+set_background () {
+  DISPLAY=:0.0 feh $BGOPTION -
+}
+
+fetch_a_wallpaper () {
+  fetch_from_web_to_stdout \
+    $(fetch_from_web_to_stdout \
+      $(fetch_from_web_to_stdout ${WALLPAPERFILTER}${1-$RESOLUTION} \
+        | get_first_url_from_line_with 'wallbase.cc/wallpaper') \
+      | get_first_url_from_line_with 'wallpapers.wallbase')
+}
+
+filter_out_primary_display () {
+  sed 's/primary//' 
+}
+
+get_resolutions () {
+  awk -F'[+ x]' '/ connected /{print $5 " " $3 "x" $4}' 
+}
+
+sort_by_offset () {
+  # The offset of the screen gives the order they are in. (Doesn't take vertical offset into account)
+  sort -n
+}
+
+get_column_with_resolutions () {
+  cut -d" " -f2
+}
+
+get_monitor_resolutions () {
+  xrandr | filter_out_primary_display | get_resolutions | sort_by_offset | get_column_with_resolutions
+}
+
+
+construct_convert_string () {
+  convert_string="convert "
+  convert_string+=$(for resolution in $(get_monitor_resolutions); do echo -n "<(fetch_a_wallpaper \"$resolution\") "; done)
+  convert_string+="+append - | set_background"
+}
+
+main () {
+  construct_convert_string
+  eval $convert_string
+}
+
+main
