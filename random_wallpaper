@@ -43,7 +43,7 @@ get_column_with_resolutions () {
 }
 
 get_monitor_resolutions () {
-  xrandr | filter_out_primary_display | get_resolutions | sort_by_offset | get_column_with_resolutions
+  DISPLAY=:0.0 xrandr | filter_out_primary_display | get_resolutions | sort_by_offset | get_column_with_resolutions
 }
 
 
