@@ -30,7 +30,7 @@ filter_out_primary_display () {
 }
 
 get_resolutions () {
-  awk -F'[+ x]' '/ connected /{print $5 " " $6 " " $3 "x" $4}' 
+  awk -F'[+ x]' '/ connected /{print $5 " " $6 " " $3 "x" $4}'
 }
 
 get_resolutions_with_offset () {
