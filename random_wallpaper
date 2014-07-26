@@ -30,27 +30,25 @@ filter_out_primary_display () {
 }
 
 get_resolutions () {
-  awk -F'[+ x]' '/ connected /{print $5 " " $3 "x" $4}' 
+  awk -F'[+ x]' '/ connected /{print $5 " " $6 " " $3 "x" $4}' 
 }
 
-sort_by_offset () {
-  # The offset of the screen gives the order they are in. (Doesn't take vertical offset into account)
-  sort -n
-}
-
-get_column_with_resolutions () {
-  cut -d" " -f2
+get_resolutions_with_offset () {
+  awk -F" " '{print $3 ":+" $1 "+" $2}'
 }
 
 get_monitor_resolutions () {
-  DISPLAY=:0.0 xrandr | filter_out_primary_display | get_resolutions | sort_by_offset | get_column_with_resolutions
+  DISPLAY=:0.0 xrandr | filter_out_primary_display | get_resolutions | get_resolutions_with_offset
 }
 
+get_screen_dimensions () {
+  DISPLAY=:0.0 xrandr | awk -F" " '/current/{gsub(/\,/, "",$10);print $8 "x" $10 }'
+}
 
 construct_convert_string () {
-  convert_string="convert "
-  convert_string+=$(for resolution in $(get_monitor_resolutions); do echo -n "<(fetch_a_wallpaper \"$resolution\") "; done)
-  convert_string+="+append - | set_background"
+  convert_string="convert -size $(get_screen_dimensions) xc:black "
+  convert_string+=$(for resolution in $(get_monitor_resolutions); do echo -n "<(fetch_a_wallpaper \"${resolution%%:*}\") -geometry ${resolution##*:} -composite "; done)
+  convert_string+=" jpeg:- | set_background"
 }
 
 main () {
