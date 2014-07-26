@@ -26,7 +26,7 @@ fetch_a_wallpaper () {
 }
 
 filter_out_primary_display () {
-  sed 's/primary//' 
+  sed 's/primary //'
 }
 
 get_resolutions () {
