@@ -4,6 +4,8 @@ PURITY=100 #000-111 #first number SFW, second sketchy, third NSFW. NSFW doesn't 
 BOARD=2 #2, 1, 3 or combined (21 for general + anime). 2=general, 1=anime, 3=high res
 BGOPTION="--bg-max --no-xinerama" # how feh should apply the image as a background, --bg-max or --bg-fill are good options, see man feh for more
 SEARCHTAG=""
+
+[[ -s $HOME/.config/random_wallpaper.conf ]] && . $HOME/.config/random_wallpaper.conf
 [[ -z $SEARCHTAG ]] && QUERY="random?" || QUERY="search?q==($SEARCHTAG)"
 WALLPAPERFILTER="http://wallbase.cc/$QUERY&color=&section=wallpapers&res_opt=eqeq&&order_mode=desc&order=random&thpp=32&purity=$PURITY&board=$BOARD&aspect=0.00&res="
 
