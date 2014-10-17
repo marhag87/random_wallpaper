@@ -7,7 +7,7 @@ SEARCHTAG=""
 
 [[ -s $HOME/.config/random_wallpaper.conf ]] && . $HOME/.config/random_wallpaper.conf
 [[ -z $SEARCHTAG ]] || QUERY="q=$SEARCHTAG&"
-WALLPAPERFILTER="http://alpha.wallhaven.cc/wallpaper/search?${QUERY}categories=$BOARD&purity=$PURITY&sorting=random&order=desc&resolutions="
+WALLPAPERFILTER="http://alpha.wallhaven.cc/search?${QUERY}categories=$BOARD&purity=$PURITY&sorting=random&order=desc&resolutions="
 
 fetch_from_web_to_stdout () {
   wget -qO- $1
