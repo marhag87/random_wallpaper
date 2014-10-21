@@ -23,10 +23,10 @@ set_background () {
 
 fetch_a_wallpaper () {
   fetch_from_web_to_stdout \
-    $(fetch_from_web_to_stdout \
+    "http:$(fetch_from_web_to_stdout \
       $(fetch_from_web_to_stdout ${WALLPAPERFILTER}${1-$RESOLUTION} \
         | get_first_url_from_line_with 'preview' 4) \
-      | get_first_url_from_line_with 'wallpapers/full' 2)
+      | get_first_url_from_line_with 'wallpapers/full' 2)"
 }
 
 filter_out_primary_display () {
